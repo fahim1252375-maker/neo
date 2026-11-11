@@ -120,14 +120,21 @@ class App extends Base {
     /**
      * @param {String} windowId
      * @param {Array|Object} deltas
+     * @param {Object} [meta] Contextual state to deliver with the deltas to Main Thread listeners
      * @returns {Promise<*>}
      */
-    applyDeltas(windowId, deltas) {
+    applyDeltas(windowId, deltas, meta) {
         if (!Array.isArray(deltas)) {
             deltas = [deltas]
         }
 
-        return this.promiseMessage(windowId, {action: 'updateVdom', deltas})
+        const message = {action: 'updateVdom', deltas};
+
+        if (meta !== undefined) {
+            message.meta = meta
+        }
+
+        return this.promiseMessage(windowId, message)
     }
 
     /**
